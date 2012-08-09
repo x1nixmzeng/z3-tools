@@ -1,0 +1,36 @@
+1 VERSIONINFO
+ FILEVERSION 0,3,0,0
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080904b0"
+        BEGIN
+            VALUE "Comments", "Filesystem extractor\0"
+            VALUE "LegalCopyright", "Copyright © 2012 WRS/x1nixmzeng\0"
+			
+			#ifdef RAIDERZ_20120213
+				VALUE "FileDescription", "Z3Ex for RaiderZ r32096\0"
+			#elif defined RAIDERZ_2012_PWE
+				VALUE "FileDescription", "Z3Ex for RaiderZ r32732\0"
+			#elif defined GUNZ2_20120524
+				VALUE "FileDescription", "Z3Ex for GunZ2 r13226\0"
+			#else
+				
+				//VALUE "FileDescription", "Z3Ex for GunZ2 r13226\0"
+				//VALUE "FileDescription", "Z3Ex for RaiderZ r34748\0"
+				VALUE "FileDescription", "Z3Ex for RaiderZ r34991\0"
+				
+				
+			#endif
+			
+            VALUE "FileVersion", "v0.03\0"
+            VALUE "InternalName", "z3ex\0"
+            VALUE "OriginalFilename", "Z3Ex.dll\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x809, 1200
+    END
+END
+
