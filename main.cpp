@@ -2,6 +2,9 @@
 	RealSpace3 Z-Extractor
 	WRS
 	
+	v0.04
+		source cleanup
+		github release
 	v0.03
 		Added PMANG RZ OBT
 		Now able to extract uncompressed files
@@ -447,39 +450,39 @@ void rs3FileExtractor( const FILEINDEX_ENTRY &fileInfo, char *nameBuffer, char f
 
 __declspec( dllexport ) void __stdcall WRS__Z3Ex( void )
 {
-#ifdef compiled_for
-	DWORD key1, key2;
 	HANDLE findex;
-	DWORD fsize;
-	char *buf1; // raw file contents
-	char *buf2; // ext. buffer
-	DWORD unsure; // <= zsize once passed
-	DWORD usize;
-	DWORD maxEx;
-	
-	//
-	// todo: something about which files to extract w GetCommandLine()
-	//
-	
-	maxEx = 50000; // 50k
+	DWORD key1, key2, fsize, usize;
+	char *buf1, *buf2;
+	const DWORD maxEx = 50000; // 50k
 	
 	OutputDebugString( "WRS__Z3Ex reading the file index\n" );
-	
-	// open file
+
+
+	// Read file to memory:	
 	findex = fcOpenRead( "fileindex.msf" );
-	// get filesize
+	
+	if( findex == INVALID_HANDLE_VALUE )
+	{
+		OutputDebugString( "WRS__Z3Ex could not open fileindex.msf" );
+		return;
+	}
+
 	fsize = fcGetSize( findex );
-	// allocate space to read into memory
 	buf1 = fcAllocate( fsize );
-	if( buf1 == NULL ) return;
-	// read file to memory
+	
+	if( buf1 == NULL )
+	{
+		fcCloseFile( findex );
+		return;
+	}
+
 	if( fcReadFile( findex, buf1, fsize ) == false )
 	{
 		fcCloseFile( findex );
 		CLEAR_MEM( buf1 );
 		return;
 	}
-	// close handle
+
 	fcCloseFile( findex );
 	
 	// allocate second buffer
@@ -493,21 +496,19 @@ __declspec( dllexport ) void __stdcall WRS__Z3Ex( void )
 	
 	OutputDebugString( "WRS__Z3Ex starting client functions\n" );
 	
-	// ######## call client functions
+	
+	// Attempt to call client functionsm:
 	
 	// Get the current values (only need to do this once)
 	GetValues( &key1, &key2 );
-	
-	unsure = fsize;
-	
-	
-
 	usize = 0;
 	
 	// this loads rsaenh.dll, lots of crypto debug infoz
-	if( PartialDec( key1, key2, buf1, fsize, buf2, &unsure ) == 0 )
+	if( PartialDec( key1, key2, buf1, fsize, buf2, &fsize ) == 0 )
 	{
 		usize = *(DWORD *) buf2;
+		buf2 += sizeof( DWORD );
+		fsize -= sizeof( DWORD );
 		OutputDebugString( "WRS__Z3Ex got the fileindex size" );
 	}
 	
@@ -515,72 +516,70 @@ __declspec( dllexport ) void __stdcall WRS__Z3Ex( void )
 	
 	if( usize != 0 )
 	{
-		char buf[0x100];
-		char *decFile; // for buffer
-		char *old; // pointer
+		char buf[128];
+		char *decFile, *old;
 		int max;
-		DWORD ret;
-		DWORD fcount;
+		DWORD ret, fcount;
 		
 		decFile = fcAllocate( usize );
 		
-		// src, size, dest, size
-		ret = Uncompress( buf2+4, fsize-4, decFile, &usize );
-		
-		#ifdef dump_filelist
+		if( !( decFile == NULL ) )
 		{
-			HANDLE flDump;
-			flDump = fcOpenWrite("filelist_dump", false);
-			fcWriteFile( flDump, decFile, usize );
-			fcCloseFile( flDump );
+			ret = Uncompress( buf2, fsize, decFile, &usize );
 			
-			OutputDebugString( "WRS__Z3Ex dumped the fileindex" );
-		}
-		#endif
-
-		max = 0;
-		old = decFile;
-		fcount = 0;
-		
-		// limit to 1 files
-		while( old-decFile < usize && max < maxEx )
-		{
-			struct FILEINDEX_ENTRY entry;
-			char *strPntr;
-			char flags;
-
-			flags = *(char *)old;
-			old += 1;
-			
-			entry = *(struct FILEINDEX_ENTRY *)old;
-			old += 20;
-			
-			strPntr = old;
-			
-			old += entry.lenMRFN;
-			old += entry.lenName;
-			
-			// debug flags here
-			//if( flags == 0x2 )
+			#ifdef dump_filelist
 			{
-				rs3FileExtractor( entry, strPntr, flags );
-				++max;
+				HANDLE flDump;
+				flDump = fcOpenWrite("filelist_dump", false);
+				fcWriteFile( flDump, decFile, usize );
+				fcCloseFile( flDump );
+				
+				OutputDebugString( "WRS__Z3Ex dumped the fileindex" );
+			}
+			#endif
 
+			max = 0;
+			old = decFile;
+			fcount = 0;
+			
+			// limit to 1 files
+			while( old-decFile < usize && max < maxEx )
+			{
+				struct FILEINDEX_ENTRY entry;
+				char *strPntr;
+				char flags;
+
+				flags = *(char *)old;
+				old += sizeof( char );
+				
+				entry = *(struct FILEINDEX_ENTRY *)old;
+				old += sizeof( struct FILEINDEX_ENTRY );
+				
+				strPntr = old;
+				
+				old += entry.lenMRFN;
+				old += entry.lenName;
+				
+				// debug flags here
+				//if( flags == 0x2 )
+				{
+					rs3FileExtractor( entry, strPntr, flags );
+					++max;
+
+				}
+				
+				++fcount;
 			}
 			
-			++fcount;
+			OutputDebugString( "WRS__Z3Ex finished parsing fileindex" );
+			
+			sprintf(buf, "Dumped %i of %i files (limited to %i)\0", max, fcount, maxEx );
+			MessageBoxA(0, buf, "WRS__Z3Ex", 0);
+			*buf=0;
 		}
-		
-		OutputDebugString( "WRS__Z3Ex finished parsing fileindex" );
-		
-		sprintf(buf, "Dumped %i of %i files (limited to %i)\0", max, fcount, maxEx );
-		MessageBoxA(0, buf, "WRS__Z3Ex", 0);
-		buf[0]=0;
 	}
 	
 	CLEAR_MEM( buf2 );
-
-#endif
 }
 
 
