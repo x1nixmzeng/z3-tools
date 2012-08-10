@@ -1,7 +1,7 @@
 #include <windows.h>
 #include <stdio.h>
 
-#include "filecmds.h"
+#include "..\filecmds.h"
 
 unsigned char launcher_key[16] = {
     0x5E, 0x58, 0x04, 0x29, 0x04, 0xBE, 0x56, 0x1C,
