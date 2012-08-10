@@ -1,15 +1,15 @@
 ﻿z3-tools
 ========
 
-**NOTE** This project now hosts the various tools I write for RaiderZ and GunZ2 (which use the RealSpace3)
+**NOTE** This project now hosts the various generic tools I write for RaiderZ and GunZ2
+
 
 ## Z3Ex
 
-This is the filesystem extraction which can be build for RaiderZ or GunZ2.
-
-There are a few client functions which have not been fully reversed which need to be called in order to unpack the files.
+This is the filesystem extractor which can be built for RaiderZ or GunZ2. It is a DLL module which depends on a few client functions which have not yet been fully reversed.
 
 At this point, the offsets are hardcoded for each client revision and a code cave is required to start the Z3Ex functions from the each client.
+
 
 ## launcherBinTxt
 

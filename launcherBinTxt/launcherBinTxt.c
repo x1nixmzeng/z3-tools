@@ -1,3 +1,11 @@
+/*
+	launcherBinTxt
+		Converts the Z3 .bin launcher files to plaintext
+	Written by x1nixmzeng
+	
+	v0.01
+*/
+
 #include <windows.h>
 #include <stdio.h>
 
@@ -41,18 +49,18 @@ void processLauncherBin( char *binData, DWORD binSize )
 
 int main( int argc, char **argv )
 {
-	printf("RaiderZ Launcher BIN to TXT\n");
+	printf("Z3 launcher BIN to TXT converter\n");
 	printf("Written by WRS\n\n");
 	
 	if( !( argc == 2 ) )
 	{
-		printf("Usage:\n\trzlauncherBin.exe \"RaiderZ Launcher.bin\"\n\n");
+		printf("Usage:\n\tlauncherBinTxt.exe <bin file>\n\n");
 		return 0;
 	}
 	else
 	{
 		HANDLE fHand;
-		char *buf;
+		char *buf, *pName;
 		DWORD size;
 		
 		fHand = fcOpenRead( argv[1] );
@@ -68,13 +76,17 @@ int main( int argc, char **argv )
 
 			if( buf )	processLauncherBin( buf, size );
 			
-			fHand = fcOpenWrite( "binout.txt", 1 );
+			pName = argv[1];
+			pName += strlen( argv[1] ) -3;
+			*(DWORD *)pName = *(DWORD *)"txt\0";
+			
+			fHand = fcOpenWrite( argv[1], 1 );
 			fcWriteFile( fHand, buf+1, size-1 );
 			fcCloseFile( fHand );
 			
 			free( buf );
 			
-			printf("Saved binout.txt!\n\n");
+			printf("Saved %s!\n\n", argv[1]);
 		}
 	}
 	
