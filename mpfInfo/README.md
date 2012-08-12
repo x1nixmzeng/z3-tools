@@ -8,7 +8,7 @@ The project was intended to explore the data structure, but has evolved into a l
 
 ## Downloads
 
-You can download the Linux x64 build here: ![GunZ2](https://raw.github.com/x1nixmzeng/z3-tools/master/mpfInfo/mfpInfo)
+You can download the Linux x64 build ![here](https://github.com/x1nixmzeng/z3-tools/raw/master/mpfInfo/mpfInfo)
 
 ## Same Analysis
 
