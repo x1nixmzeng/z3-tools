@@ -1,0 +1,2 @@
+Action: Patch the file		buildver.mvf
+Action: Patch the file		fileindex.msf

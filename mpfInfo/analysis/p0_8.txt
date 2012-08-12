@@ -1,0 +1,12 @@
+Action: Patch the file		Data\Interface.mrf
+Removals: 2
+Additions: 2
+3 - 0
+4 = 0
+Action: Patch the file		Data\system.mrf
+Removals: 3
+Additions: 3
+3 - 0
+4 = 0
+Action: Patch the file		buildver.mvf
+Action: Patch the file		fileindex.msf

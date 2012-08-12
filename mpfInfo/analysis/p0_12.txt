@@ -1,0 +1,23 @@
+Action: Patch the file		Data\Interface.mrf
+Removals: 4
+Additions: 4
+3 - 0
+4 = 0
+Action: Patch the file		Data\Zone.001
+Removals: 3
+Additions: 0
+3 - 5
+4 = 0
+Action: Patch the file		Data\Zone.mrf
+Removals: 4
+Additions: 1
+3 - 3
+4 = 0
+Action: Patch the file		Data\system.mrf
+Removals: 8
+Additions: 8
+3 - 0
+4 = 0
+Action: Patch the file		Raiderz.exe
+Action: Patch the file		buildver.mvf
+Action: Patch the file		fileindex.msf

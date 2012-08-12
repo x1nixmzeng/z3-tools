@@ -5,7 +5,6 @@
 	- x1nixmzeng
 */
 
-#include <windows.h>
 #include <stdio.h>
 
 #include "mbuffer.h" // (this is a C++ TMemoryStream implementation)
@@ -22,7 +21,7 @@ enum PATCHTYPE
 
 struct PATCHNODE
 {
-	DWORD size;
+	unsigned int size;
 	unsigned char type;
 };
 
@@ -47,7 +46,7 @@ bool checkHeader( mbuffer &pfile )
 
 char *getFilename( mbuffer &pfile )
 {
-	DWORD nlen;
+	unsigned int nlen;
 	char *data;
 
 	nlen = pfile.ReadUInt();
@@ -62,9 +61,9 @@ int main( int argc, char **argv )
 {
 	TMemoryStream patch;
 
-	if( patch.LoadFromFile( "patch1_2.mpf" ) )
+	if( argc == 2 && patch.LoadFromFile( argv[1] ) )
 	{
-		DWORD totlen;
+		unsigned int totlen;
 		PATCHNODE pnode;
 		char MD5[16];
 
@@ -75,22 +74,22 @@ int main( int argc, char **argv )
 		
 		while( patch.Position() < patch.Size() )
 		{
-			DWORD curpos = patch.Position();
+			unsigned int curpos = patch.Position();
 
 			patch.Read( &pnode, sizeof( PATCHNODE ) );
 
 			if( pnode.type == 1 )
 			{
-				DWORD lencheck = patch.ReadUInt();
+				unsigned int lencheck = patch.ReadUInt();
 				patch.Read( &MD5, 16 );
 
 				char *fname;
 				fname = getFilename( patch );
 
-				printf("Action: Add file\t\t%s\n", fname);
+				printf("Action: Add file\t\t%s (%u)\n", fname, patch.Position());
 				delete fname;
 
-				DWORD len;
+				unsigned int len;
 				len = patch.ReadUInt();
 
 				patch.Seek( len, mbo_current );
@@ -106,7 +105,7 @@ int main( int argc, char **argv )
 			else
 			if( pnode.type == 3 )
 			{
-				DWORD lencheck = patch.ReadUInt();
+				unsigned int lencheck = patch.ReadUInt();
 				patch.Read( &MD5, 16 );
 
 				char *fname;
@@ -114,7 +113,7 @@ int main( int argc, char **argv )
 				printf("Action: Patch the file\t\t%s\n", fname );
 				delete fname;
 
-				DWORD len;
+				unsigned int len;
 				patch.Seek( 4, mbo_current );
 				len = patch.ReadUInt();
 
@@ -124,7 +123,7 @@ int main( int argc, char **argv )
 			else
 			if( pnode.type == 4 )
 			{
-				DWORD lencheck = patch.ReadUInt();
+				unsigned int lencheck = patch.ReadUInt();
 				patch.Read( &MD5, 16 );
 
 				char *fname;
@@ -160,6 +159,10 @@ int main( int argc, char **argv )
 		}
 		
 		patch.Clear();
+	}
+	else
+	{
+		printf("Usage:\nmpfInfo <patchfile.mpf>\n\n");
 	}
 
 	return 0;
