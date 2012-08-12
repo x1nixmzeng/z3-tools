@@ -3,167 +3,67 @@
 
 	Very simple parser of MAIET Patch Files (.MPF)
 	- x1nixmzeng
+
+	August 12th
+	> Added a bit more C++ wizardary
+	> Few tweaks to compile on linux
 */
 
 #include <stdio.h>
 
-#include "mbuffer.h" // (this is a C++ TMemoryStream implementation)
+#include "mbuffer.h" // a TMemoryStream implementation
+#include "fbuffer.h" // a TFileStream implementation
 
-enum PATCHTYPE
+#include "mpfInfo.h"
+
+unsigned int getSizeOfFile( const char *filename )
 {
-	PATCH_ADDFILE = 1,
-	PATCH_REMOVEFILE,
-	PATCH_MODIFYFILE,
-	PATCH_MODIFYFILE2
-};
+	unsigned int fsize( 0 );
+	TFileStream strm( filename );
 
-#pragma pack(push, 1)
+	if( !( strm.isOpen() ) )
+		return( fsize ); // of 0
 
-struct PATCHNODE
-{
-	unsigned int size;
-	unsigned char type;
-};
+	fsize = strm.Size();
+	strm.Close();
 
-#pragma pack(pop)
-
-bool checkHeader( mbuffer &pfile )
-{
-	const char MPATCHHEADER[] = "MAIET PATCH FILE v2.1\0\0\0\0";
-	char tmp[25];
-
-	if( pfile.Read( &tmp, 25 ) )
-	{
-		for( int i(0); i < 25; ++i )
-			if( tmp[i] != MPATCHHEADER[i] )
-				return false;
-
-		return true;
-	}
-
-	return false;
-}
-
-char *getFilename( mbuffer &pfile )
-{
-	unsigned int nlen;
-	char *data;
-
-	nlen = pfile.ReadUInt();
-	data = new char[nlen+1];
-	pfile.Read( data, nlen );
-	data[nlen] = 0;
-
-	return data;
+	return( fsize );
 }
 
 int main( int argc, char **argv )
 {
-	TMemoryStream patch;
-
-	if( argc == 2 && patch.LoadFromFile( argv[1] ) )
+	bool valid( false );
+	
+	if( argc == 2 )
 	{
-		unsigned int totlen;
-		PATCHNODE pnode;
-		char MD5[16];
+		unsigned int basicCheck = getSizeOfFile( argv[1] );
 
-		totlen = patch.ReadUInt();
-		checkHeader( patch );
-
-		patch.Seek( 29, mbo_beginning );
-		
-		while( patch.Position() < patch.Size() )
+		if( basicCheck > 0 )
 		{
-			unsigned int curpos = patch.Position();
+			TStream *patchFile;
 
-			patch.Read( &pnode, sizeof( PATCHNODE ) );
-
-			if( pnode.type == 1 )
+			if( basicCheck > ( 1 << 23 ) )
 			{
-				unsigned int lencheck = patch.ReadUInt();
-				patch.Read( &MD5, 16 );
-
-				char *fname;
-				fname = getFilename( patch );
-
-				printf("Action: Add file\t\t%s (%u)\n", fname, patch.Position());
-				delete fname;
-
-				unsigned int len;
-				len = patch.ReadUInt();
-
-				patch.Seek( len, mbo_current );
-			}
-			else
-			if( pnode.type == 2 )
-			{
-				char *fname;
-				fname = getFilename( patch );
-				printf("Action: Remove the file\t\t%s\n", fname);
-				delete fname;
-			}
-			else
-			if( pnode.type == 3 )
-			{
-				unsigned int lencheck = patch.ReadUInt();
-				patch.Read( &MD5, 16 );
-
-				char *fname;
-				fname = getFilename( patch );
-				printf("Action: Patch the file\t\t%s\n", fname );
-				delete fname;
-
-				unsigned int len;
-				patch.Seek( 4, mbo_current );
-				len = patch.ReadUInt();
-
-				patch.Seek( len, mbo_current );
-
-			}
-			else
-			if( pnode.type == 4 )
-			{
-				unsigned int lencheck = patch.ReadUInt();
-				patch.Read( &MD5, 16 );
-
-				char *fname;
-				fname = getFilename( patch );
-				printf("Action: Patch the file\t\t%s\n", fname );
-				delete fname;
-				
-
-				PATCHNODE mnode; // mod node
-
-				int types[4] = {0};
-
-				while( pnode.size > patch.Position() - curpos )
-				{
-					patch.Read( &mnode, sizeof( PATCHNODE ) );
-
-					if( mnode.type > 0 && mnode.type < 5 )
-						++types[ mnode.type-1 ];
-
-					patch.Seek( mnode.size-sizeof( PATCHNODE ), mbo_current );
-				}
-
-				// Guessed types
-				printf("Removals: %i\nAdditions: %i\n3 - %i\n4 = %i\n",
-					types[0], types[1], types[2], types[3] );
-
+				printf("WARNING: Large file! Reading from TFileStream..\n");
+				patchFile = new TFileStream( argv[1] );
+				valid = dynamic_cast<TFileStream *>( patchFile )->isOpen();
 			}
 			else
 			{
-				printf("Read unknown type %02X (%u)\n", pnode.type, patch.Position());
-				break;
+				patchFile = new TMemoryStream;
+				valid = dynamic_cast<TMemoryStream *>( patchFile )->LoadFromFile( argv[1] );
 			}
+
+			if( valid )
+				getMpfInfo( *patchFile );
+
+			patchFile->Close();
+			delete patchFile;
 		}
-		
-		patch.Clear();
 	}
-	else
-	{
+	
+	if( !( valid ) )
 		printf("Usage:\nmpfInfo <patchfile.mpf>\n\n");
-	}
 
 	return 0;
 }
