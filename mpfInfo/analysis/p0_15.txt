@@ -1,3 +1,0 @@
-Usage:
-mpfInfo <patchfile.mpf>
-

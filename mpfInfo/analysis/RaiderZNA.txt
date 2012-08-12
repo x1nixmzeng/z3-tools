@@ -1,0 +1,224 @@
+Source:	patch1_1.mpf
+
+WARNING: Large file!
+
+-- Modify file	Data\CutScene.mrf
+ MD5		25e2b6c138eebb367b23e9be8e1fc083
+ POSITION 75
+ > Remove data from 69460 to 71488 (2028 bytes)
+ > Remove data from 33148 to 38836 (5688 bytes)
+ > Insert data 33148 5691 5706
+ > Insert data 69463 2017 2043
+-- Modify file	Data\Field.mrf
+ MD5		36990f19e1fc7e724748e39f0c56ada0
+ POSITION 7927
+ > Remove data from 583331 to 585689 (2358 bytes)
+ > Remove data from 578512 to 580125 (1613 bytes)
+ > Remove data from 411919 to 419887 (7968 bytes)
+ > Remove data from 127604 to 130912 (3308 bytes)
+ > Remove data from 47153 to 70267 (23114 bytes)
+ > Insert data 47153 23240 23193
+ > Insert data 127730 3300 3318
+ > Insert data 412037 7979 7975
+ > Insert data 578641 1698 1721
+ > Insert data 583545 2357 2388
+-- Modify file	Data\Interface.mrf
+ MD5		00d7587d7d5459526d3d8e923e36796c
+ POSITION 46719
+ > Remove data from 57871709 to 57875648 (3939 bytes)
+ > Remove data from 9386948 to 9389310 (2362 bytes)
+ > Remove data from 42480 to 46345 (3865 bytes)
+ > Remove data from 6215 to 7063 (848 bytes)
+ > Insert data 6215 1294 1315
+ > Insert data 42926 3874 3888
+ > Insert data 9387403 2259 2287
+ > Insert data 47885372 5678 5736
+ > Insert data 57877739 3948 3997
+-- Modify file	Data\Sound.mrf
+ MD5		77af599b64d153138e6603dd25af4757
+ POSITION 64122
+ > Remove data from 0 to 60071 (60071 bytes)
+ > Insert data 0 60065 59240
+-- Modify file	Data\system.mrf
+ MD5		158da0c0d34bb1dbd668b76269950dd0
+ POSITION 123436
+ > Remove data from 6411396 to 7212790 (801394 bytes)
+ > Remove data from 5654134 to 6402628 (748494 bytes)
+ > Remove data from 5127068 to 5575503 (448435 bytes)
+ > Remove data from 4303734 to 5126419 (822685 bytes)
+ > Remove data from 3626309 to 4300175 (673866 bytes)
+ > Remove data from 3558661 to 3625361 (66700 bytes)
+ > Remove data from 3544891 to 3549241 (4350 bytes)
+ > Remove data from 2214275 to 2869780 (655505 bytes)
+ > Remove data from 1368374 to 2039112 (670738 bytes)
+ > Remove data from 1128453 to 1217444 (88991 bytes)
+ > Remove data from 654740 to 1127347 (472607 bytes)
+ > Remove data from 466395 to 466637 (242 bytes)
+ > Remove data from 286093 to 367847 (81754 bytes)
+ > Remove data from 217081 to 261444 (44363 bytes)
+ > Remove data from 0 to 209223 (209223 bytes)
+ > Insert data 0 208758 210475
+ > Insert data 216616 44254 44343
+ > Insert data 285519 81648 81924
+ > Insert data 465715 242 264
+ > Insert data 654060 472681 455498
+ > Insert data 1127847 88610 89548
+ > Insert data 1367387 671191 666354
+ > Insert data 2213741 657196 649406
+ > Insert data 3546048 5262 4753
+ > Insert data 3560730 66598 67457
+ > Insert data 3628276 672778 680701
+ > Insert data 4304613 818758 819953
+ > Insert data 5124020 448600 447101
+ > Insert data 5651251 748207 756415
+ > Insert data 6408226 802817 802699
+-- Add file	GameGuard.des
+ MD5		696d21618f8e3c2897e6166711283618
+ Size		312801
+
+-- Add file	RaiderzUS.ini
+ MD5		ab1fbcd6da9f298ff0b1c48c49fe8d65
+ Size		477
+
+-- Replace file	Raiderz.exe
+ MD5		3967ce776331307876f3597c0e529c2d
+ Old Size	8162946
+ Size		2560855
+
+-- Replace file	buildver.mvf
+ MD5		15b5bf9e36ffd0ffee60e88da24d23aa
+ Old Size	95
+ Size		96
+
+-- Replace file	fileindex.msf
+ MD5		8416ecda929e9eef539700483d0b41b8
+ Old Size	898312
+ Size		910535
+
+Source:	patch1_2.mpf
+
+-- Modify file	Data\Field.mrf
+ MD5		c52384787a7cdec5d1649d4a0f30efef
+ POSITION 72
+ > Remove data from 50381 to 70393 (20012 bytes)
+ > Insert data 50381 20010 19995
+-- Modify file	Data\Interface.mrf
+ MD5		e8399b49aeb80d2f0dee4bf964d13536
+ POSITION 20144
+ > Remove data from 47816195 to 47822465 (6270 bytes)
+ > Remove data from 9455209 to 9458818 (3609 bytes)
+ > Remove data from 6215 to 7509 (1294 bytes)
+ > Insert data 6215 1360 1378
+ > Insert data 9239951 27394 25556
+ > Insert data 9482669 3636 3681
+ > Insert data 36631386 1614599 1626856
+ > Insert data 49458281 6270 6308
+-- Modify file	Data\system.mrf
+ MD5		9cd0e7ff96dd97faacf638fb65bd56c9
+ POSITION 1684091
+ > Remove data from 7211043 to 7225180 (14137 bytes)
+ > Remove data from 6676602 to 6875989 (199387 bytes)
+ > Remove data from 6408226 to 6508884 (100658 bytes)
+ > Remove data from 5658172 to 5772143 (113971 bytes)
+ > Remove data from 5573936 to 5577740 (3804 bytes)
+ > Remove data from 5237509 to 5572620 (335111 bytes)
+ > Remove data from 5124020 to 5221474 (97454 bytes)
+ > Remove data from 4304613 to 5123371 (818758 bytes)
+ > Remove data from 3628276 to 4296372 (668096 bytes)
+ > Remove data from 3551504 to 3627328 (75824 bytes)
+ > Insert data 3551504 75684 76597
+ > Insert data 3628136 667753 675607
+ > Insert data 4304130 819136 820169
+ > Insert data 5123915 97481 98738
+ > Insert data 5237431 335119 332250
+ > Insert data 5573866 3802 3842
+ > Insert data 5658100 113978 114661
+ > Insert data 6408161 100690 101367
+ > Insert data 6676569 199368 199530
+ > Insert data 7210991 18803 19031
+-- Add file	RaiderZ Launcher.bin
+ MD5		f02139e20f11c738ebf847ce2965bac6
+ Size		4252
+
+-- Add file	Raiderz Launcher.exe
+ MD5		b9fd8737cba0935537c4c63aa376e371
+ Size		582847
+
+-- Replace file	Raiderz.exe
+ MD5		0bc63ece5b9c6bb56f959cf38943f920
+ Old Size	2485440
+ Size		2509721
+
+-- Replace file	buildver.mvf
+ MD5		32b7b40159f51808420a49bca2124d89
+ Old Size	95
+ Size		97
+
+-- Replace file	fileindex.msf
+ MD5		d9b23e5f476934346fb71a7585473ea8
+ Old Size	898490
+ Size		910728
+
+Source:	patch1_3.mpf
+
+-- Remove file	Raiderz_Publish.exe
+
+-- Replace file	RaiderZ Launcher.bin
+ MD5		168492d54cd4037576b0b62d60232164
+ Old Size	4211
+ Size		4251
+
+-- Replace file	buildver.mvf
+ MD5		e60a11894537082f50984595a09671a9
+ Old Size	95
+ Size		97
+
+-- Replace file	fileindex.msf
+ MD5		394a9f916f09d334461805d04f245763
+ Old Size	898490
+ Size		910782
+
+Source:	patch1_4.mpf
+
+-- Modify file	Data\Interface.mrf
+ MD5		4eaf24717b90440581ef14bd77dfc63e
+ POSITION 76
+ > Insert data 31878155 330228 323994
+-- Modify file	Data\system.mrf
+ MD5		6e380798c7a1ef03778dfaaa4d8337af
+ POSITION 324131
+ > Remove data from 6676569 to 7210991 (534422 bytes)
+ > Remove data from 6408161 to 6508851 (100690 bytes)
+ > Remove data from 5658100 to 5772078 (113978 bytes)
+ > Remove data from 4557628 to 5104021 (546393 bytes)
+ > Remove data from 3634890 to 3751016 (116126 bytes)
+ > Remove data from 3551504 to 3560695 (9191 bytes)
+ > Remove data from 3546048 to 3551310 (5262 bytes)
+ > Remove data from 2213741 to 2870937 (657196 bytes)
+ > Remove data from 1285010 to 1292267 (7257 bytes)
+ > Remove data from 269401 to 285085 (15684 bytes)
+ > Insert data 269401 15658 14759
+ > Insert data 1284984 7212 6567
+ > Insert data 2213670 657794 650332
+ > Insert data 3546575 5261 4750
+ > Insert data 3552030 9274 9313
+ > Insert data 3635499 116141 117337
+ > Insert data 4558252 546879 544895
+ > Insert data 5659210 113971 114679
+ > Insert data 6409264 100658 101318
+ > Insert data 6677640 535015 532105
+-- Replace file	Raiderz.exe
+ MD5		5bb21f3bf103b33ecc4e0cbcf325dbac
+ Old Size	2455762
+ Size		2475018
+
+-- Replace file	buildver.mvf
+ MD5		8723d8fac999539d870c74f681832759
+ Old Size	95
+ Size		97
+
+-- Replace file	fileindex.msf
+ MD5		8475d0ad54e5af9f2ffde4306d325006
+ Old Size	898465
+ Size		910730
+

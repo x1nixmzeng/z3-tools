@@ -40,14 +40,17 @@ int main( int argc, char **argv )
 
 		if( basicCheck > 0 )
 		{
+			printf("Source:\t%s\n\n", argv[1] );
 			TStream *patchFile;
 
+			// If large-ish file, stream it
 			if( basicCheck > ( 1 << 23 ) )
 			{
-				printf("WARNING: Large file! Reading from TFileStream..\n");
+				printf("WARNING: Large file!\n\n");
 				patchFile = new TFileStream( argv[1] );
 				valid = dynamic_cast<TFileStream *>( patchFile )->isOpen();
 			}
+			// Else, load it to memory
 			else
 			{
 				patchFile = new TMemoryStream;
