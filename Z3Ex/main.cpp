@@ -36,7 +36,8 @@
 //#define RAIDERZ_20120213
 //#define GUNZ2_20120524
 //#define RAIDERZ_20120704
-#define RAIDERZ_r34991
+//#define RAIDERZ_r34991
+#define RAIDERZ_r35358
 
 #ifdef RAIDERZ_20120213
 
@@ -93,6 +94,18 @@
 	
 	#define addrUncompress	0x006C3220
 	
+#elif defined RAIDERZ_r35358
+
+	// RaiderZ PWE (r35358, CBT w patch1_4.mpf applied)
+	// Protected with ASProtect again
+	
+	#define compiled_for	"RaiderZ r35358"
+	
+	// values are 0ABBB38 and 000000CA
+	#define addrGetValues	0x006B62D0
+	#define addrPartialDec	0x006CBAA0
+	
+	#define addrUncompress	0x006C4180
 	
 #elif defined GUNZ2_20120524
 

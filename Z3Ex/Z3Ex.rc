@@ -18,7 +18,8 @@ BEGIN
 				
 				//VALUE "FileDescription", "Z3Ex for GunZ2 r13226\0"
 				//VALUE "FileDescription", "Z3Ex for RaiderZ r34748\0"
-				VALUE "FileDescription", "Z3Ex for RaiderZ r34991\0"
+				//VALUE "FileDescription", "Z3Ex for RaiderZ r34991\0"
+				VALUE "FileDescription", "Z3Ex for RaiderZ r35358\0"
 				
 				
 			#endif
