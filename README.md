@@ -18,6 +18,16 @@ This is a tool to convert the `.bin` files (not used by the Korean publisher) to
 The launcher downloads patch files using a combination of the `SYS_REMOTEPATCHFILEARG` value and the version information from `buildver.mvf` (12 bytes). This file also happens to share the same decompression technique (and key?) as the filesystem.
 
 
+**NOTE** An unreleased build of GunZ2 used a JSON patch format:
+
+    {
+       "Version" : {
+          "ClientExe" : 4,
+          "Launcher" : 1
+       }
+    }
+
+
 ## mpfInfo
 
 Very simple tool to parse update files using the `MAIET Patch File` format. The format allows for an updater to modify specific bytes of filedata (ontop of adding and removing entire files).

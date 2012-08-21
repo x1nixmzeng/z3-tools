@@ -222,3 +222,35 @@ Source:	patch1_4.mpf
  Old Size	898465
  Size		910730
 
+Source:	patch1_5.mpf
+
+-- Modify file	Data\system.mrf
+ MD5		d43db530b361dc1aefb97eea8022aebc
+ POSITION 73
+ > Remove data from 7212655 to 7231458 (18803 bytes)
+ > Remove data from 5125025 to 5236512 (111487 bytes)
+ > Remove data from 4304754 to 5124376 (819622 bytes)
+ > Remove data from 3628745 to 4296513 (667768 bytes)
+ > Remove data from 3561304 to 3627797 (66493 bytes)
+ > Remove data from 1284984 to 1292196 (7212 bytes)
+ > Insert data 1284984 7231 6586
+ > Insert data 3561323 66914 67767
+ > Insert data 3629185 667911 675868
+ > Insert data 4305337 819527 820486
+ > Insert data 5125513 111513 112944
+ > Insert data 7213169 14137 14299
+-- Replace file	Raiderz.exe
+ MD5		c050f7f147a9196e5e868981fef09dfb
+ Old Size	335588
+ Size		328795
+
+-- Replace file	buildver.mvf
+ MD5		9a9acab4ecdca1587641283780d78439
+ Old Size	95
+ Size		97
+
+-- Replace file	fileindex.msf
+ MD5		7ea168f93edfa8653002791bf07a5484
+ Old Size	898464
+ Size		910700
+
