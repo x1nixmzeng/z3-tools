@@ -15394,3 +15394,199 @@ Source:	patch0_24.mpf
  Old Size	898562
  Size		910805
 
+Source:	patch0_25.mpf
+
+-- Modify file	Data\system.mrf
+ MD5		c7bf29872ee3ee2cccc607d2f4558861
+ POSITION 73
+ > Remove data from 9704676 to 9706695 (2019 bytes)
+ > Remove data from 9594672 to 9689627 (94955 bytes)
+ > Remove data from 9232182 to 9575116 (342934 bytes)
+ > Remove data from 8774980 to 9025926 (250946 bytes)
+ > Remove data from 7891914 to 8432213 (540299 bytes)
+ > Remove data from 7700670 to 7767302 (66632 bytes)
+ > Remove data from 465993 to 475103 (9110 bytes)
+ > Insert data 465993 9120 9228
+ > Insert data 7700680 66650 67500
+ > Insert data 7891942 538085 544639
+ > Insert data 8772794 251040 253895
+ > Insert data 9230090 343028 342035
+ > Insert data 9592674 94952 96172
+ > Insert data 9702675 2011 2049
+-- Remove file	HSUpChk.log
+
+-- Remove file	Update\ahn.ui
+
+-- Remove file	Update\ahni2.dll
+
+-- Remove file	Update\ahnupctl.dll
+
+-- Remove file	Update\autoup.exe
+
+-- Remove file	Update\patch\39\ahn.ui
+
+-- Remove file	Update\patch\39\ahnrpt.ex-
+
+-- Remove file	Update\patch\39\ahnrpt.in-
+
+-- Remove file	Update\patch\39\ahnupctl.dl-
+
+-- Remove file	Update\patch\39\ahnupgs.dl-
+
+-- Remove file	Update\patch\39\bldinfo.in-
+
+-- Remove file	Update\patch\39\ehsvc.dl-
+
+-- Remove file	Update\patch\39\hshield.da-
+
+-- Remove file	Update\patch\39\hsinst.dl-
+
+-- Remove file	Update\patch\39\hslogmgr.ex-
+
+-- Remove file	Update\patch\39\hsupdate.ex-
+
+-- Remove file	Update\patch\39\v3hunt.dl-
+
+-- Remove file	Update\patch\39\v3inetgs.dl-
+
+-- Remove file	Update\supdate.log
+
+-- Remove file	Update\user.dat
+
+-- Remove file	Update\v3bz32.dll
+
+-- Remove file	Update\win\e\b\b_echo_sl\asc_com.dl-
+
+-- Remove file	Update\win\e\b\b_echo_sl\asc_dh.dl-
+
+-- Remove file	Update\win\e\b\b_echo_sl\asc_fse.dl-
+
+-- Remove file	Update\win\e\b\b_echo_sl\asc_intg.dl-
+
+-- Remove file	Update\win\e\b\b_echo_sl\asc_mmgr.dl-
+
+-- Remove file	Update\win\e\b\b_echo_sl\asc_unp.dl-
+
+-- Remove file	Update\win\e\b\b_echo_sl\fse_base.dl-
+
+-- Remove file	Update\win\e\b\b_echo_sl\fse_fact.dl-
+
+-- Remove file	Update\win\e\b\b_echo_sl\fse_pe.dl-
+
+-- Remove file	Update\win\e\b\b_echo_sl\gfs_base.dl-
+
+-- Remove file	Update\win\e\b\b_echo_sl\gfs_fact.dl-
+
+-- Remove file	Update\win\e\b\b_echo_sl\gfs_file.dl-
+
+-- Remove file	Update\win\e\b\b_echo_sl\gfs_mem.dl-
+
+-- Remove file	Update\win\e\b\b_echo_sl\gfs_os.dl-
+
+-- Remove file	Update\win\e\b\b_echo_sl\gfs_proc.dl-
+
+-- Remove file	Update\win\e\b\b_echo_sl\gfs_util.dl-
+
+-- Remove file	Update\win\e\b\b_sign_hs\0asc.sc-
+
+-- Remove file	Update\win\e\b\b_sign_hs\0sccure.sc-
+
+-- Remove file	Update\win\e\b\b_sign_hs\0sgame.sc-
+
+-- Remove file	Update\win\e\b\b_sign_hs\0spe3f.sc-
+
+-- Remove file	Update\win\e\b\b_sign_hs\moduler.sc-
+
+-- Remove file	Update\win\e\b\b_sign_hs\option.sc-
+
+-- Remove file	Update\win\e\b\v3_echo_hs\v3pro32s.dl-
+
+-- Remove file	Update\win\e\hs_heuristic\3n.mh-
+
+-- Remove file	asc\0asc.scd
+
+-- Remove file	asc\0sccure.scd
+
+-- Remove file	asc\0sgame.scd
+
+-- Remove file	asc\0spe3f.scd
+
+-- Remove file	asc\asc_com.dll
+
+-- Remove file	asc\asc_dh.dll
+
+-- Remove file	asc\asc_fse.dll
+
+-- Remove file	asc\asc_intg.dll
+
+-- Remove file	asc\asc_mmgr.dll
+
+-- Remove file	asc\asc_unp.dll
+
+-- Remove file	asc\fse_base.dll
+
+-- Remove file	asc\fse_fact.dll
+
+-- Remove file	asc\fse_pe.dll
+
+-- Remove file	asc\gfs_base.dll
+
+-- Remove file	asc\gfs_fact.dll
+
+-- Remove file	asc\gfs_file.dll
+
+-- Remove file	asc\gfs_mem.dll
+
+-- Remove file	asc\gfs_os.dll
+
+-- Remove file	asc\gfs_proc.dll
+
+-- Remove file	asc\gfs_util.dll
+
+-- Remove file	asc\moduler.scd
+
+-- Remove file	asc\option.scd
+
+-- Remove file	hshield.log
+
+-- Remove file	hslogmgr.exe
+
+-- Remove file	supdate.log
+
+-- Replace file	Raiderz.exe
+ MD5		d3d9835c29b589bac973787fcdd1bb2a
+ Old Size	8126648
+ Size		2592654
+
+-- Replace file	buildver.mvf
+ MD5		301e128fb60fd37f231641fac75893ba
+ Old Size	95
+ Size		97
+
+-- Replace file	fileindex.msf
+ MD5		710cd0df3b5cdd72e29c9db42cb877bb
+ Old Size	898568
+ Size		910824
+
+Source:	patch0_26.mpf
+
+-- Modify file	Data\Interface.mrf
+ MD5		c2bcce896c73d5fc77b5fd2a53ed526d
+ POSITION 76
+ > Remove data from 0 to 3551 (3551 bytes)
+ > Insert data 0 4129 4178
+-- Modify file	Data\system.mrf
+ MD5		64290433aa439fd3f6801f8a634c5f24
+ POSITION 4328
+ > Remove data from 7891942 to 8430027 (538085 bytes)
+ > Insert data 7891942 538095 544497
+-- Replace file	buildver.mvf
+ MD5		7ccf1a423fa0188edfa07995f6bdfd27
+ Old Size	95
+ Size		97
+
+-- Replace file	fileindex.msf
+ MD5		293b8e643cc1658bcbd8d154aad9a7f4
+ Old Size	898524
+ Size		910749
+
