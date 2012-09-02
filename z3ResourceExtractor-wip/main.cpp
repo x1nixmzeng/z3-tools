@@ -109,8 +109,6 @@ void decodeInstruction( unsigned char *data, unsigned int &count, unsigned char 
 
 	// NOTE: not checking if there are at least 5 bytes left in the data stream!!
 
-
-
 	// Read control byte
 	tmpByte = data[0];	// MOV BL,BYTE PTR DS:[EAX]
 	count = 1;			// INC EAX
@@ -135,8 +133,9 @@ void decodeInstruction( unsigned char *data, unsigned int &count, unsigned char 
 
 	}
 
+
 	// added check on mask
-	if( edx > 0 )
+//	if( edx > 0 )
 	{
 		// assert edx < 5 ??
 
@@ -187,6 +186,8 @@ void decodeInstruction( unsigned char *data, unsigned int &count, unsigned char 
 	else
 	{
 		// write out data (todo: offsetting, etc)
+
+		edx += edi;
 
 		printf(" data %u bytes ", edx );
 
