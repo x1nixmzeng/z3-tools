@@ -2,7 +2,7 @@
 	z3ResourceExtractor-wip
 	x1nixmzeng
 
-	** Still very early reversing work **
+	Run-length decoding function
 
 	Thanks to skyflox (XeNTaX)
 */
@@ -28,11 +28,11 @@
 
 struct codedSizeByte
 {
-	unsigned char data : 7;
-	bool inSequence : 1;
+	unsigned char data	: 7;
+	bool notLastData	: 1;
 };
 
-bool decodeSizeData( unsigned char *data, unsigned int &value, unsigned int &length )
+bool decodeSize( unsigned char *data, unsigned int &value, unsigned int &length )
 {
 	codedSizeByte sizeByte;
 	unsigned int bitSHL;
@@ -40,7 +40,7 @@ bool decodeSizeData( unsigned char *data, unsigned int &value, unsigned int &len
 	value = 0;	// Reset returned size value
 	length = 0;	// Length (in bytes) of size data
 
-	bitSHL = 0;	// 
+	bitSHL = 0;	// Reset number of bits to shift left
 
 	do
 	{
@@ -53,151 +53,77 @@ bool decodeSizeData( unsigned char *data, unsigned int &value, unsigned int &len
 		bitSHL += 7;	// Bits of data per 'codedSizeByte'
 		++data;			// Move along buffer
 	}
-	while( sizeByte.inSequence );
+	while( sizeByte.notLastData );
 
+	// Calculate the actual length of data
 	length = bitSHL /= 7;
 
 	return true;
 }
 
-
-unsigned int decodeSize( unsigned char *data, unsigned int &count )
+bool decodeInstruction( unsigned char *data, unsigned int &count, unsigned char *buff, unsigned int &bufCount )
 {
-	unsigned char tmpByte;
-	unsigned int sizeValue;
+	unsigned char cmdMarker;
+	unsigned int instruction, instructionExSize, buf32;
 
-	sizeValue = 0;
 	count = 0;
 
-	do
-	{
-		if( count > 32 )
-			return( static_cast<unsigned int>( -1 ) );
-
-		tmpByte = *data;
-		sizeValue |= ( ( tmpByte & 0x7F ) << count );
-
-		count += 7;
-		++data;
-	}
-	while( tmpByte >> 7 );
-
-	count /= 7;
-	return sizeValue;
-}
-
-union controlCmd
-{
-	unsigned short rawData;
-
-	struct
-	{
-		unsigned char mask : 5;
-		unsigned char cmd  : 3;
-
-		unsigned char len;
-	} directData;
-};
-
-/*
+	// Read the command marker from the buffer
+	cmdMarker = *(unsigned char *)(data+count);
+	++count;
 	
-*/
-void decodeInstruction( unsigned char *data, unsigned int &count, unsigned char *buff, unsigned int &bufCount )
-{
-	unsigned char tmpByte;
-	unsigned int ecx,edx,edi;
+	// Lookup the instruction
+	instruction = z3RleInstructions[ cmdMarker ];
 
-	// NOTE: not checking if there are at least 5 bytes left in the data stream!!
+	// Length of additional bytes (5-bits of instruction)
+	instructionExSize = instruction >> 11;
 
-	// Read control byte
-	tmpByte = data[0];	// MOV BL,BYTE PTR DS:[EAX]
-	count = 1;			// INC EAX
-						// MOVZX EDX,BL
-						// MOVZX ECX,WORD PTR DS:[EDX*2+<table2>]
-	ecx = table2_new[ tmpByte ];
-/*
-	ecx:0000 0000 0000 0000
-		^^^^ ^				number of masking bytes
-		      ^^^			related to commands
-			      ^^^^ ^^^^	length/size of data
-*/
-	edx = ecx >> 11;	// SHR EDX,0B
-	
-	controlCmd test;
-	test.rawData = ecx;
+	if( instructionExSize > 4 )
+		return false;
 
-	if( test.directData.mask )
+	// Read these additional bytes (only 4 are supported)
+	buf32 = 0;
+	for( unsigned int i(0 ); i < instructionExSize; ++i, ++count )
 	{
-		unsigned int ebp;
-		ebp = *(unsigned int *)(data+1);
-
+		// Read another byte into buf32
+		unsigned int tmp = data[ count ];
+		tmp <<= ( i * 8 );
+		buf32 |= tmp;
 	}
 
-
-	// added check on mask
-//	if( edx > 0 )
+	// Check command marker for method
+	if( cmdMarker & 3 )
 	{
-		// assert edx < 5 ??
+		// Using the destination buffer as the source (copying existing data)
 
-		edi = table1[ edx ];// MOV EDI,DWORD PTR DS:[EDX*4+<table1>]
+		unsigned int srcOffset, msgLength;
 
-		unsigned int ebp;
+		// Data can be up to 2,047 bytes from current position
+		srcOffset = ( instruction & 0x700 ) + buf32;
+		msgLength = ( instruction & 0xFF );
 
-		// Read possible byte stream (4-bytes)
-		ebp = *(unsigned int *)(data+count);
-
-		count += edx;		// ADD EAX,EDX
-		edi &= ebp;			// AND EDI,EBP
-
-		// todo: finish ebp stuff
-	}
-
-	edx = ecx & 0xFF;	// MOVZX EDX,CL
-
-	if( tmpByte & 3 )	// TEST BL,3
-	{
-		// process command (but no more data)
-
-		// 0x700 is the lower 3 bits of the HIBYTE in the word
-		ecx &= 0x700;
-		ecx += edi;
-
-		// edx and ecx contain the values here
-		
-		unsigned int srcOffset, dstLength;
-
-		srcOffset = ecx;
-		dstLength = edx;
-
-		// hacky means of avoiding about 5 memcpy clones
-		for(unsigned int i = 0; i < dstLength; ++i )
-		{
-			// copying from existing data
+		// Copy data from existing buffer
+		for(unsigned int i = 0; i < msgLength; ++i )
 			*(buff+bufCount+i) = *(buff+bufCount-(srcOffset - (i % srcOffset)));
-		}
 
-		//memcpy( buff+bufCount, (buff+bufCount-ecx), edx );
-
-		//count += edx;
-
-		printf("| %08X %08X |", edx, ecx);
-		bufCount += edx; // test!!
+		bufCount += msgLength;
 	}
 	else
 	{
-		// write out data (todo: offsetting, etc)
+		// Using the source buffer as the source (inserting new data)
 
-		edx += edi;
+		unsigned int msgLength;
 
-		printf(" data %u bytes ", edx );
+		msgLength = ( instruction & 0xFF ) + buf32;
 
-		// test
-		memcpy( buff+bufCount, (data+count), edx );
-		bufCount += edx;
-
-		count += edx;
+		// Copy data from buffer
+		memcpy( buff+bufCount, data+count, msgLength );
+		count += msgLength;
+		
+		bufCount += msgLength;
 	}
 
+	return true;
 }
 
 int main( int argc, char** argv )
@@ -232,27 +158,24 @@ int main( int argc, char** argv )
 
 
 			unsigned char *pdata;
-			unsigned int lastLength, datalen;
 
 			pdata = (unsigned char *)dBuffer;
 
 			unsigned int a,b;
 
-			if( decodeSizeData( pdata, a, b ) )
+			if( decodeSize( pdata, a, b ) )
 			{
 				printf( "GOT SIZE: %u (%u bytes)\n", a, b );
 			}
 
-			// Read and skip header
-			datalen = decodeSize( pdata, lastLength );
-			pdata += lastLength;
+			pdata += b;
 
 			unsigned char *buffer = new unsigned char[a];
 			unsigned int bufOffset = 0;
 
-			printf("Uncompressed: %u bytes\n", datalen );
+			printf("Uncompressed: %u bytes\n", a );
 
-			unsigned int i = lastLength;
+			unsigned int i = b;
 
 			// #jit streaming
 			fcHandle = filecmds::fcOpenWrite("dump.dat", true);
@@ -264,13 +187,13 @@ int main( int argc, char** argv )
 
 				printf("Next instruction: %02X - ", *pdata );
 
-				decodeInstruction( pdata, lastLength, buffer, bufOffset );
+				decodeInstruction( pdata, b, buffer, bufOffset );
 		
 				filecmds::fcWriteFile( fcHandle, (char *)buffer+oldi, bufOffset-oldi );
 
-				pdata += lastLength;
-				i += lastLength;
-				printf("%u bytes!  (%u/%u)\n", lastLength, i, dBufferLen );
+				pdata += b;
+				i += b;
+				printf("%u bytes!  (%u/%u)\n", b, i, dBufferLen );
 			}
 
 			delete dBuffer;

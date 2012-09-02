@@ -3,32 +3,16 @@
 	x1nixmzeng
 
 	tables.h
-		Static data tables from Netmarble GunZ2.exe
+		Static data table for Z3RLE
 
 	Converted table2 to 16-bit items
+	Renamed table to z3RleInstruction
 */
 
 #ifndef _H_TABLES_
 #define _H_TABLES_
 
-/*
-	Unknown
-		Maybe control byte masking?
-*/
-unsigned int table1[5] = 
-{
-	0x00000000,	// ??
-	0x000000FF,	// 1 byte
-	0x0000FFFF,	// 2 bytes
-	0x00FFFFFF,	// 3 bytes
-	0xFFFFFFFF	// 4 bytes
-};
-
-/*
-	Control byte table
-		Size assumed from constraints
-*/
-unsigned short table2_new[ 256 ] =
+unsigned short z3RleInstructions[ 256 ] =
 {
 	0x0001, 0x0804, 0x1001, 0x2001, 0x0002, 0x0805, 0x1002, 0x2002,
 	0x0003, 0x0806, 0x1003, 0x2003, 0x0004, 0x0807, 0x1004, 0x2004,
