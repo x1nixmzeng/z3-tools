@@ -25,6 +25,42 @@
 
 	NOTE: Only a basic shift overflow check
 */
+
+struct codedSizeByte
+{
+	unsigned char data : 7;
+	bool inSequence : 1;
+};
+
+bool decodeSizeData( unsigned char *data, unsigned int &value, unsigned int &length )
+{
+	codedSizeByte sizeByte;
+	unsigned int bitSHL;
+
+	value = 0;	// Reset returned size value
+	length = 0;	// Length (in bytes) of size data
+
+	bitSHL = 0;	// 
+
+	do
+	{
+		// Check shift value (indicates invalid starting position)
+		if( bitSHL > 32 ) return false;
+
+		sizeByte = *(codedSizeByte *)data;
+		value |= ( static_cast<unsigned int>( sizeByte.data ) << bitSHL );
+
+		bitSHL += 7;	// Bits of data per 'codedSizeByte'
+		++data;			// Move along buffer
+	}
+	while( sizeByte.inSequence );
+
+	length = bitSHL /= 7;
+
+	return true;
+}
+
+
 unsigned int decodeSize( unsigned char *data, unsigned int &count )
 {
 	unsigned char tmpByte;
@@ -35,22 +71,38 @@ unsigned int decodeSize( unsigned char *data, unsigned int &count )
 
 	do
 	{
-		if( count * 7 > 32 )
+		if( count > 32 )
 			return( static_cast<unsigned int>( -1 ) );
 
-		tmpByte = data[ count ];
-		sizeValue |= ( ( tmpByte & 0x7F ) << ( count * 7 ) );
-		++count;
+		tmpByte = *data;
+		sizeValue |= ( ( tmpByte & 0x7F ) << count );
+
+		count += 7;
+		++data;
 	}
 	while( tmpByte >> 7 );
 
+	count /= 7;
 	return sizeValue;
 }
+
+union controlCmd
+{
+	unsigned short rawData;
+
+	struct
+	{
+		unsigned char mask : 5;
+		unsigned char cmd  : 3;
+
+		unsigned char len;
+	} directData;
+};
 
 /*
 	
 */
-void decodeInstruction( unsigned char *data, unsigned int &count )
+void decodeInstruction( unsigned char *data, unsigned int &count, unsigned char *buff, unsigned int &bufCount )
 {
 	unsigned char tmpByte;
 	unsigned int ecx,edx,edi;
@@ -64,7 +116,7 @@ void decodeInstruction( unsigned char *data, unsigned int &count )
 	count = 1;			// INC EAX
 						// MOVZX EDX,BL
 						// MOVZX ECX,WORD PTR DS:[EDX*2+<table2>]
-	ecx = *(unsigned short *)( table2 + ( tmpByte * sizeof( short ) ) );
+	ecx = table2_new[ tmpByte ];
 /*
 	ecx:0000 0000 0000 0000
 		^^^^ ^				number of masking bytes
@@ -73,6 +125,16 @@ void decodeInstruction( unsigned char *data, unsigned int &count )
 */
 	edx = ecx >> 11;	// SHR EDX,0B
 	
+	controlCmd test;
+	test.rawData = ecx;
+
+	if( test.directData.mask )
+	{
+		unsigned int ebp;
+		ebp = *(unsigned int *)(data+1);
+
+	}
+
 	// added check on mask
 	if( edx > 0 )
 	{
@@ -86,8 +148,8 @@ void decodeInstruction( unsigned char *data, unsigned int &count )
 		ebp = *(unsigned int *)(data+count);
 
 		count += edx;		// ADD EAX,EDX
-		ebp &= edi;			// AND EDI,EBP
-		
+		edi &= ebp;			// AND EDI,EBP
+
 		// todo: finish ebp stuff
 	}
 
@@ -100,12 +162,38 @@ void decodeInstruction( unsigned char *data, unsigned int &count )
 		// 0x700 is the lower 3 bits of the HIBYTE in the word
 		ecx &= 0x700;
 		ecx += edi;
+
+		// edx and ecx contain the values here
+		
+		unsigned int srcOffset, dstLength;
+
+		srcOffset = ecx;
+		dstLength = edx;
+
+		// hacky means of avoiding about 5 memcpy clones
+		for(unsigned int i = 0; i < dstLength; ++i )
+		{
+			// copying from existing data
+			*(buff+bufCount+i) = *(buff+bufCount-(srcOffset - (i % srcOffset)));
+		}
+
+		//memcpy( buff+bufCount, (buff+bufCount-ecx), edx );
+
+		//count += edx;
+
+		printf("| %08X %08X |", edx, ecx);
+		bufCount += edx; // test!!
 	}
 	else
 	{
 		// write out data (todo: offsetting, etc)
 
 		printf(" data %u bytes ", edx );
+
+		// test
+		memcpy( buff+bufCount, (data+count), edx );
+		bufCount += edx;
+
 		count += edx;
 	}
 
@@ -147,25 +235,49 @@ int main( int argc, char** argv )
 
 			pdata = (unsigned char *)dBuffer;
 
+			unsigned int a,b;
+
+			if( decodeSizeData( pdata, a, b ) )
+			{
+				printf( "GOT SIZE: %u (%u bytes)\n", a, b );
+			}
+
 			// Read and skip header
 			datalen = decodeSize( pdata, lastLength );
 			pdata += lastLength;
+
+			unsigned char *buffer = new unsigned char[a];
+			unsigned int bufOffset = 0;
 
 			printf("Uncompressed: %u bytes\n", datalen );
 
 			unsigned int i = lastLength;
 
+			// #jit streaming
+			fcHandle = filecmds::fcOpenWrite("dump.dat", true);
+
 			while( i < dBufferLen )
 			{
+				unsigned int oldi = bufOffset;
+
+
 				printf("Next instruction: %02X - ", *pdata );
-				decodeInstruction( pdata, lastLength );
+
+				decodeInstruction( pdata, lastLength, buffer, bufOffset );
 		
+				filecmds::fcWriteFile( fcHandle, (char *)buffer+oldi, bufOffset-oldi );
+
 				pdata += lastLength;
 				i += lastLength;
 				printf("%u bytes!  (%u/%u)\n", lastLength, i, dBufferLen );
 			}
 
 			delete dBuffer;
+
+			filecmds::fcCloseFile( fcHandle );
+
+
+			delete buffer;
 		}
 
 		printf("Done!\n\n");
