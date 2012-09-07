@@ -195,8 +195,8 @@ int main( int argc, char **argv )
 	else
 	{
 		printf("Usage:\n" \
-			"	launcherbin.exe u \"RaiderZ Launcher.bin\"\n" \
-			"	launcherbin.exe r \"RaiderZ Launcher.txt\"\n\n");
+			"	launcherBinTxt.exe u \"RaiderZ Launcher.bin\"\n" \
+			"	launcherBinTxt.exe r \"RaiderZ Launcher.txt\"\n\n");
 	}
 	
 	if( processLauncherFunc )
